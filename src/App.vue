@@ -1,0 +1,43 @@
+<template>
+  <img alt="Vue logo" src="./assets/logo.png" />
+  <CardSingle v-for="card in cards" :key="card.id" :cardData="card" />
+  haha
+  <van-button type="primary">主要按钮</van-button>
+  <van-button type="success">成功按钮</van-button>
+  <van-button type="primary" size="large">大号按钮</van-button>
+  <AddCard />
+</template>
+
+<script>
+import CardSingle from "./components/CardSingle.vue";
+import AddCard from "./components/AddCard.vue";
+export default {
+  name: "App",
+  components: {
+    CardSingle,
+    AddCard,
+  },
+  setup() {
+    let cards = [
+      {
+        name: "店名",
+        hangye: "美食",
+        type: 0,
+        total: 3000,
+        money: 1111,
+        endDate: "20201010",
+      },
+      {
+        name: "店名2",
+        hangye: "美食2",
+        type: 0,
+        total: 600,
+        money: 151,
+        endDate: "20201010",
+      },
+    ];
+
+    return { cards };
+  },
+};
+</script>
