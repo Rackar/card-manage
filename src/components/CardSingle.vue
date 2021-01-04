@@ -12,7 +12,10 @@
           :stroke-width="60"
           :text="'余额：' + state.money + '元'"
       /></van-col>
-      <van-col span="4">使用 删除</van-col>
+      <van-col span="4">
+        <div><van-button @click="useCard">消费</van-button></div>
+        <div><van-button @click="deleteCard">删除</van-button></div>
+      </van-col>
     </van-row>
     <van-divider dashed></van-divider>
     <van-progress :percentage="50" stroke-width="3" pivot-text="过期还剩xx天" />
@@ -37,13 +40,16 @@ export default {
     //     };
 
     let rate = computed(() => (state.money / state.total) * 100);
-    return { state, rate };
+
+    const useCard = () => {};
+    const deleteCard = () => {};
+    return { state, rate, useCard, deleteCard };
   },
 };
 </script>
 <style >
 .my-card {
-  margin: 16px;
+  margin: 26px 16px;
   min-height: 160px;
   padding: 10px 4px;
   border-radius: 10px;

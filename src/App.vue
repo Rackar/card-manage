@@ -1,20 +1,21 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
+  <router-view></router-view>
+  <!-- <img alt="Vue logo" src="./assets/logo.png" />
   <CardSingle v-for="card in cards" :key="card.id" :cardData="card" />
   haha
   <van-button type="primary">主要按钮</van-button>
   <van-button type="success">成功按钮</van-button>
   <van-button type="primary" size="large">大号按钮</van-button>
-  <AddCard />
+  <AddCard /> -->
 </template>
 
 <script>
-import CardSingle from "./components/CardSingle.vue";
+import CardsList from "./components/CardsList.vue";
 import AddCard from "./components/AddCard.vue";
 export default {
   name: "App",
   components: {
-    CardSingle,
+    CardsList,
     AddCard,
   },
   setup() {

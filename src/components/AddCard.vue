@@ -51,12 +51,17 @@
     @confirm="onConfirm"
   />
   <van-button type="primary" @click="saveCard">保存卡信息</van-button>
+
+  <router-link to="/"> <van-button>取消</van-button></router-link>
 </template>
 
 <script>
 import { reactive, ref } from "vue";
+import { instance } from "../utils/axios";
+import { useRouter } from "vue-router";
 export default {
   setup() {
+    let router = useRouter();
     const state = reactive({
       name: "",
       money: "",
@@ -83,6 +88,18 @@ export default {
 
     const saveCard = () => {
       console.log(state);
+      let data = {
+        name: state.name,
+        money: state.money,
+        hangye: state.hangye,
+        endDate: state.endDate,
+      };
+      instance.post("/api/cards", { card: data }).then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          router.push("/");
+        }
+      });
     };
 
     return { state, pattern, checked, onConfirm, onConfirmHangye, saveCard };
