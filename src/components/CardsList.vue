@@ -1,10 +1,6 @@
 <template>
   我的会员卡
-  <router-link to="/add">
-    <van-button type="primary" size="large"
-      >添加新会员卡</van-button
-    ></router-link
-  >
+  <router-link to="/add"> <van-button type="primary" size="large">添加新会员卡</van-button></router-link>
 
   <CardSingle v-for="card in state.cards" :key="card.id" :cardData="card" />
 
