@@ -57,6 +57,21 @@ export default {
     //     };
 
     let rate = computed(() => (state.money / state.total) * 100);
+    
+    let currentMoney=state.total
+const calcRate=(log)=>{
+log.forEach(e=>{
+currentMoney+=e.detail
+})
+}
+
+let allDay=calcDateDis(state.startDate,state.endDate)
+let leftDay=calcDateDis(Date.Now(),state.endDate)
+
+function calcDateDis(dateBegin,dateEnd){
+return (dateEnd-dateBegin)/3600/24/1000
+}
+
 
     const useCard = () => {
       console.log("使用");
