@@ -3,13 +3,32 @@
     <h2 style="text-align: center">登录</h2>
     <van-cell-group>
       <!-- <van-field v-model="form.user_name" label="用户名" placeholder="请输入用户名" required /> -->
-      <van-field v-model="state.form.mobile" label="用户名" placeholder="请输入用户名/手机号" required />
-      <van-field v-model="state.form.password" type="password" label="密码" placeholder="请输入密码" required />
+      <van-field
+        v-model="state.form.mobile"
+        label="用户名"
+        placeholder="请输入用户名/手机号"
+        required
+      />
+      <van-field
+        v-model="state.form.password"
+        type="password"
+        label="密码"
+        placeholder="请输入密码"
+        required
+      />
     </van-cell-group>
     <van-button @click="onSubmit">登录</van-button>
-    <van-button @click="$router.push('/signup')" style="margin-left: 20px">注册</van-button>
+    <van-button @click="$router.push('/signup')" style="margin-left: 20px"
+      >注册</van-button
+    >
     <van-overlay :show="state.loading" style="z-index: 3" class-name="myover">
-      <van-loading type="spinner" color="#1989fa" vertical style="margin-top: 100px">加载中...</van-loading>
+      <van-loading
+        type="spinner"
+        color="#1989fa"
+        vertical
+        style="margin-top: 100px"
+        >加载中...</van-loading
+      >
     </van-overlay>
   </div>
 </template>
@@ -37,7 +56,9 @@ export default {
       },
       rules: {
         mobile: [{ required: true, message: "请输入手机号", trigger: "blur" }],
-        password: [{ required: true, message: "请输入密码", trigger: "change" }],
+        password: [
+          { required: true, message: "请输入密码", trigger: "change" },
+        ],
       },
     };
 
@@ -64,7 +85,7 @@ export default {
 
             store.commit("login_saveToken", token);
 
-            let previousUrl = "/star";
+            let previousUrl = "/";
             // if (this.$route.query && this.$route.query.redirect)
             //   previousUrl = this.$route.query.redirect;
             router.push(previousUrl);

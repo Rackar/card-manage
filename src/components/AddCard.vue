@@ -1,9 +1,27 @@
 <template>
   <h3>输入卡片信息</h3>
-  <van-field label="商户名" v-model="state.name" name="pattern" placeholder="店名" :rules="[{ pattern, message: '请输入正确内容' }]" />
-  <van-field v-model="state.hangye" readonly clickable label="行业" placeholder="可选择行业" @click="state.showPicker = true" />
+  <van-field
+    label="商户名"
+    v-model="state.name"
+    name="pattern"
+    placeholder="店名"
+    required
+    error-message="店名不能为空"
+  />
+  <van-field
+    v-model="state.hangye"
+    readonly
+    clickable
+    label="行业"
+    placeholder="可选择行业"
+    @click="state.showPicker = true"
+  />
   <van-popup v-model:show="state.showPicker" round position="bottom">
-    <van-picker :columns="state.columns" @cancel="state.showPicker = false" @confirm="onConfirmHangye" />
+    <van-picker
+      :columns="state.columns"
+      @cancel="state.showPicker = false"
+      @confirm="onConfirmHangye"
+    />
   </van-popup>
   <van-field name="radio" label="卡类型">
     <template #input>
@@ -14,10 +32,26 @@
       </van-radio-group>
     </template>
   </van-field>
-  <van-field label="金额" v-model="state.money" name="pattern" placeholder="余额" :rules="[{ pattern, message: '请输入正确内容' }]" />
+  <van-field
+    label="金额"
+    v-model="state.money"
+    name="pattern"
+    placeholder="余额"
+    required
+    error-message="金额不能为空"
+  />
 
-  <van-cell style="text-align: left" title="选择截止日期" :value="state.endDate" @click="state.showCalendar = true" />
-  <van-calendar v-model:show="state.showCalendar" :show-confirm="false" @confirm="onConfirm" />
+  <van-cell
+    style="text-align: left"
+    title="选择截止日期"
+    :value="state.endDate && state.endDate.toLocaleDateString()"
+    @click="state.showCalendar = true"
+  />
+  <van-calendar
+    v-model:show="state.showCalendar"
+    :show-confirm="false"
+    @confirm="onConfirm"
+  />
   <van-button type="primary" @click="saveCard">保存卡信息</van-button>
 
   <router-link to="/"> <van-button>取消</van-button></router-link>
@@ -48,7 +82,7 @@ export default {
       state.showPicker = false;
     };
     const onConfirm = (date) => {
-      state.endDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+      state.endDate = date;
       state.showCalendar = false;
     };
 

@@ -10,7 +10,7 @@
           v-model:current-rate="rate"
           :rate="100"
           :stroke-width="60"
-          :text="'余额：' + state.money + '元'"
+          :text="'余额：' + currentMoney + '元'"
       /></van-col>
       <van-col span="4">
         <div><van-button @click="state.useShow = true">消费</van-button></div>
@@ -18,7 +18,11 @@
       </van-col>
     </van-row>
     <van-divider dashed></van-divider>
-    <van-progress :percentage="50" stroke-width="3" pivot-text="过期还剩xx天" />
+    <van-progress
+      :percentage="state.dayRate"
+      stroke-width="3"
+      :pivot-text="`过期还剩` + state.leftDay + `天`"
+    />
   </div>
   <van-dialog
     v-model:show="state.useShow"
@@ -28,7 +32,7 @@
   >
     <van-field
       v-model="state.number"
-      :placeholder="state.money"
+      :placeholder="currentMoney"
       type="number"
     />
     <!-- <van-button>确定</van-button> -->
@@ -36,42 +40,58 @@
 </template>
 
 <script>
-import { reactive, computed } from "vue";
+import { reactive, ref, computed } from "vue";
 import { instance } from "../utils/axios";
+import { Dialog } from "vant";
 export default {
   props: {
     cardData: Object,
   },
   setup(props) {
-    let state = props.cardData;
+    let state = reactive(props.cardData);
     state.cardShowed = true;
     state.useShow = false;
     state.number = null;
-    // {
-    //       name: "店名",
-    //       hangye: "美食",
-    //       type: 0,
-    //       total: 3000,
-    //       money: 1111,
-    //       endDate: "20201010",
-    //     };
 
-    let rate = computed(() => (state.money / state.total) * 100);
-    
-    let currentMoney=state.total
-const calcRate=(log)=>{
-log.forEach(e=>{
-currentMoney+=e.detail
-})
-}
+    // let currentMoney = computed(() => {
+    //   let detail = state.log.reduce((prev, next) => prev.detail + next.detail);
+    //   debugger;
+    //   console.log(detail);
+    //   return state.money + detail;
+    // });
 
-let allDay=calcDateDis(state.startDate,state.endDate)
-let leftDay=calcDateDis(Date.Now(),state.endDate)
+    // let rate = computed(() => (currentMoney / state.money) * 100);
+    let currentMoney = ref(state.money);
+    recalcCurrent();
+    function recalcCurrent() {
+      currentMoney.value = state.money;
+      if (state.log && state.log.length) {
+        let detail = state.log.map((log) => log.detail);
+        let te = detail.reduce((p, n) => {
+          return p + n;
+        });
+        currentMoney.value += te;
+      }
+    }
 
-function calcDateDis(dateBegin,dateEnd){
-return (dateEnd-dateBegin)/3600/24/1000
-}
+    let rate = computed(() => (currentMoney.value / state.money) * 100);
+    // let currentMoney = state.total;
+    // const calcRate = (log) => {
+    //   log.forEach((e) => {
+    //     currentMoney += e.detail;
+    //   });
+    // };
 
+    let allDay = calcDateDis(state.createdAt, state.endDate);
+
+    state.leftDay = calcDateDis(Date.now(), state.endDate);
+    state.dayRate = (state.leftDay / allDay) * 100;
+
+    function calcDateDis(dateBegin, dateEnd) {
+      let b = new Date(dateBegin).getTime();
+      let e = new Date(dateEnd).getTime();
+      return Math.floor((e - b) / 3600 / 24 / 1000);
+    }
 
     const useCard = () => {
       console.log("使用");
@@ -83,6 +103,8 @@ return (dateEnd-dateBegin)/3600/24/1000
           console.log(data);
           if (data.data.status === 1) {
             console.log("修改成功");
+            state.log.push({ detail: state.number * -1, _id: state._id });
+            recalcCurrent();
           } else {
             console.log("修改不成功");
           }
@@ -90,19 +112,52 @@ return (dateEnd-dateBegin)/3600/24/1000
     };
     const deleteCard = () => {
       console.log(state);
-      instance
-        .delete("/api/cards", { params: { id: state._id } })
-        .then((data) => {
-          console.log(data);
-          if (data.data.status === 1) {
-            console.log("删除成功");
-            state.cardShowed = false;
-          } else {
-            console.log("删除不成功");
-          }
+      // const beforeClose = (action, done) =>
+      //   new Promise((resolve, reject) => {
+      //     if (action === "confirm") {
+      //       instance
+      //         .delete("/api/cards", { params: { id: state._id } })
+      //         .then((data) => {
+      //           console.log(data);
+      //           if (data.data.status === 1) {
+      //             console.log("删除成功");
+      //             state.cardShowed = false;
+      //           } else {
+      //             console.log("删除不成功");
+      //           }
+      //           resolve(true);
+      //         })
+      //         .catch(() => resolve(true));
+      //     } else {
+      //       // 拦截取消操作
+      //       resolve(true);
+      //       // done();
+      //     }
+      //   });
+
+      Dialog.confirm({
+        title: "删除",
+        message: "确定删除本卡片？",
+      })
+        .then(() => {
+          // on confirm
+          instance
+            .delete("/api/cards", { params: { id: state._id } })
+            .then((data) => {
+              console.log(data);
+              if (data.data.status === 1) {
+                console.log("删除成功");
+                state.cardShowed = false;
+              } else {
+                console.log("删除不成功");
+              }
+            });
+        })
+        .catch(() => {
+          // on cancel
         });
     };
-    return { state, rate, useCard, deleteCard };
+    return { state, rate, currentMoney, useCard, deleteCard };
   },
 };
 </script>
