@@ -1,8 +1,11 @@
 <template>
-  我的会员卡
-  <router-link to="/add"> <van-button type="primary" size="large">添加新会员卡</van-button></router-link>
+  <router-link to="/add"> <van-button type="primary" class="add-button" color="linear-gradient(to right, rgb(5, 100, 210), rgb(25, 137, 250))">添加新会员卡</van-button></router-link>
 
   <CardSingle v-for="card in state.cards" :key="card.id" :cardData="card" />
+
+  <router-link to="/add" v-if="state.cards.length > 3">
+    <van-button type="primary" class="add-button" color="linear-gradient(to right, rgb(5, 100, 210), rgb(25, 137, 250))">添加新会员卡</van-button></router-link
+  >
 
   <div v-if="!state.cards || !state.cards.length">尚未添加会员卡</div>
 </template>
@@ -40,3 +43,8 @@ export default {
   },
 };
 </script>
+<style>
+.add-button {
+  box-shadow: rgb(99, 99, 99) 2px 2px 6px;
+}
+</style>

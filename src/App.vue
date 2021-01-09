@@ -12,6 +12,8 @@
 <script>
 import CardsList from "./components/CardsList.vue";
 import AddCard from "./components/AddCard.vue";
+import { store } from "./utils/store";
+import { router } from "./utils/router";
 export default {
   name: "App",
   components: {
@@ -19,6 +21,12 @@ export default {
     AddCard,
   },
   setup() {
+    var token = window.localStorage.token;
+    if (token) {
+      store.commit("login_saveToken", token);
+    } else {
+      router.push("/login");
+    }
     let cards = [
       {
         name: "店名",
