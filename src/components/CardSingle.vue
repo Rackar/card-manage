@@ -5,37 +5,23 @@
         ><div class="my-store-name">{{ state.name }}</div>
         <div class="my-store-hangye">{{ state.hangye }}</div></van-col
       >
-      <van-col span="12"
-        ><van-circle
-          v-model:current-rate="rate"
-          :rate="100"
-          :stroke-width="60"
-          :text="'余额：' + currentMoney + '元'"
-      /></van-col>
-      <van-col span="4">
-        <div><van-button @click="state.useShow = true">消费</van-button></div>
-        <div><van-button @click="deleteCard">删除</van-button></div>
+      <van-col span="12"><van-circle v-model:current-rate="rate" :rate="100" :stroke-width="60" :text="'余额：' + currentMoney + '元'" /></van-col>
+      <van-col span="6">
+        <div class="card-right-button"><van-button size="small" type="primary" @click="state.useShow = true">消费</van-button></div>
+        <div class="card-right-button"><van-button size="small" @click="state.detailShow = true">明细</van-button></div>
+        <div class="card-right-button"><van-button size="small" type="warning" @click="deleteCard">删除</van-button></div>
       </van-col>
     </van-row>
     <van-divider dashed></van-divider>
-    <van-progress
-      :percentage="state.dayRate"
-      stroke-width="3"
-      :pivot-text="`过期还剩` + state.leftDay + `天`"
-    />
+    <van-progress :percentage="state.dayRate" stroke-width="3" :pivot-text="`过期还剩` + state.leftDay + `天`" />
   </div>
-  <van-dialog
-    v-model:show="state.useShow"
-    title="本次消费金额或次数（如储值请输入负数）"
-    show-cancel-button
-    @confirm="useCard"
-  >
-    <van-field
-      v-model="state.number"
-      :placeholder="currentMoney"
-      type="number"
-    />
+  <van-dialog v-model:show="state.useShow" title="本次消费金额或次数（如储值请输入负数）" show-cancel-button @confirm="useCard">
+    <van-field v-model="state.number" :placeholder="currentMoney" type="number" />
     <!-- <van-button>确定</van-button> -->
+  </van-dialog>
+  <van-dialog v-model:show="state.detailShow" title="历史明细：">
+    <div>{{ new Date(state.createdAt).toLocaleDateString() }} : {{ state.money }}</div>
+    <div v-for="log in state.log" :key="log._id">{{ new Date(log.changeDate).toLocaleDateString() }} : {{ log.detail }}</div>
   </van-dialog>
 </template>
 
@@ -50,6 +36,7 @@ export default {
   setup(props) {
     let state = reactive(props.cardData);
     state.cardShowed = true;
+    state.detailShow = false;
     state.useShow = false;
     state.number = null;
 
@@ -82,9 +69,12 @@ export default {
     //   });
     // };
 
-    let allDay = calcDateDis(state.createdAt, state.endDate);
+    // let allDay = calcDateDis(new Date(2021, 0, 4), state.endDate);
+    // state.leftDay = calcDateDis(new Date(2021, 0, 6), state.endDate);
 
+    let allDay = calcDateDis(state.createdAt, state.endDate);
     state.leftDay = calcDateDis(Date.now(), state.endDate);
+    state.leftDay = state.leftDay < 0 ? 0 : state.leftDay;
     state.dayRate = (state.leftDay / allDay) * 100;
 
     function calcDateDis(dateBegin, dateEnd) {
@@ -103,7 +93,7 @@ export default {
           console.log(data);
           if (data.data.status === 1) {
             console.log("修改成功");
-            state.log.push({ detail: state.number * -1, _id: state._id });
+            state.log.push({ detail: state.number * -1, _id: state._id, changeDate: Date.now() });
             recalcCurrent();
           } else {
             console.log("修改不成功");
@@ -141,17 +131,15 @@ export default {
       })
         .then(() => {
           // on confirm
-          instance
-            .delete("/api/cards", { params: { id: state._id } })
-            .then((data) => {
-              console.log(data);
-              if (data.data.status === 1) {
-                console.log("删除成功");
-                state.cardShowed = false;
-              } else {
-                console.log("删除不成功");
-              }
-            });
+          instance.delete("/api/cards", { params: { id: state._id } }).then((data) => {
+            console.log(data);
+            if (data.data.status === 1) {
+              console.log("删除成功");
+              state.cardShowed = false;
+            } else {
+              console.log("删除不成功");
+            }
+          });
         })
         .catch(() => {
           // on cancel
@@ -161,7 +149,7 @@ export default {
   },
 };
 </script>
-<style >
+<style>
 .my-card {
   margin: 26px 16px;
   min-height: 160px;
@@ -181,5 +169,9 @@ export default {
   padding-top: 10px;
   font-size: 16px;
   color: grey;
+}
+.card-right-button {
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 </style>
