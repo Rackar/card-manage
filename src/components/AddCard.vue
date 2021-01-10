@@ -76,7 +76,7 @@ export default {
       if (!state.endDate) {
         Toast("请填入截止日期");
       } else {
-        instance.post("/api/cards", { card: data }).then((res) => {
+        instance.post("api/cards", { card: data }).then((res) => {
           console.log(res);
           if (res.status === 200) {
             router.push("/");

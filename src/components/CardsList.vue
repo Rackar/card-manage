@@ -26,7 +26,7 @@ export default {
     });
 
     const getAllCards = () => {
-      instance.get("/api/cards").then((data) => {
+      instance.get("/cards").then((data) => {
         console.log(data);
         if (data && data.data && data.data.data && data.data.data.length) {
           console.log(data.data.data);

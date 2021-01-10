@@ -2,7 +2,10 @@ import axios, { axiosInstance } from "axios";
 import { Toast } from "vant";
 import {router} from "./router"
 let instance = axios.create({
-  baseURL: "http://localhost:3006",
+  // baseURL: process.env.NODE_ENV === "production"
+  //   ? "https://tools.codingyang.com/api"
+  //   : "http://localhost:3006",
+  baseURL: import.meta.env.HOST,
   timeout: 50000 * 2,
 });
 

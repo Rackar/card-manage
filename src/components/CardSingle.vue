@@ -95,7 +95,7 @@ export default {
     const useCard = () => {
       console.log("使用");
       instance
-        .put("/api/cards", {
+        .put("api/cards", {
           card: { _id: state._id, changeMoney: state.number * -1 },
         })
         .then((data) => {
@@ -140,7 +140,7 @@ export default {
       })
         .then(() => {
           // on confirm
-          instance.delete("/api/cards", { params: { id: state._id } }).then((data) => {
+          instance.delete("api/cards", { params: { id: state._id } }).then((data) => {
             console.log(data);
             if (data.data.status === 1) {
               console.log("删除成功");
