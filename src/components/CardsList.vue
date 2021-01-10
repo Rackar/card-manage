@@ -7,7 +7,7 @@
     <van-button type="primary" class="add-button" color="linear-gradient(to right, rgb(5, 100, 210), rgb(25, 137, 250))">添加新会员卡</van-button></router-link
   >
 
-  <div v-if="!state.cards || !state.cards.length">尚未添加会员卡</div>
+  <div class="card-info" v-if="!state.cards || !state.cards.length">管理你储值过的各种会员卡，并提醒余额和有效期</div>
 </template>
 
 <script>
@@ -46,5 +46,8 @@ export default {
 <style>
 .add-button {
   box-shadow: rgb(99, 99, 99) 2px 2px 6px;
+}
+.card-info {
+  margin: 10px;
 }
 </style>

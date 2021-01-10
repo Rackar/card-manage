@@ -8,7 +8,7 @@
       <van-field v-model="form.password2" type="password" label="密码" placeholder="请输入密码" required />
       <!-- <van-field v-model="form.user_name" label="昵称" placeholder="请输入昵称" required /> -->
     </van-cell-group>
-    <van-button @click="onSubmit">注册</van-button>
+    <van-button @click="onSubmit" type="primary">注册</van-button>
     <van-button @click="$router.push('/login')" style="margin-left: 20px">登录</van-button>
     <!-- <h2 style="text-align:center">注册账号</h2> -->
   </div>

@@ -69,6 +69,7 @@ export default {
 
     // let rate = computed(() => (currentMoney.value / state.money) * 100);
     let rate = (currentMoney.value / state.money) * 100;
+    if (rate > 100 || rate < 0.000001) rate = 0;
     // let currentMoney = state.total;
     // const calcRate = (log) => {
     //   log.forEach((e) => {
@@ -82,6 +83,7 @@ export default {
     let allDays = calcDateDis(state.createdAt, state.endDate);
     let leftDays = calcDateDis(Date.now(), state.endDate);
     state.dayRate = (leftDays / allDays) * 100;
+    if (state.dayRate > 100 || state.dayRate < 0.000001) state.dayRate = 0;
     state.leftDay = leftDays < 0 ? 0 : Math.round(leftDays * 10) / 10;
 
     function calcDateDis(dateBegin, dateEnd) {

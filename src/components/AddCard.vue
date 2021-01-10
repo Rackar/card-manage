@@ -15,7 +15,7 @@
         </van-radio-group>
       </template>
     </van-field>
-    <van-field label="金额" v-model="state.money" name="pattern" type="number" placeholder="余额" :rules="[{ required: true, message: '请输入可用余额或次数' }]" />
+    <van-field label="金额" v-model="state.money" name="pattern" type="number" placeholder="储值金额" :rules="[{ required: true, message: '请输入可用余额或次数' }]" />
 
     <van-cell
       style="text-align: left"
@@ -50,7 +50,7 @@ export default {
       showCalendar: false,
 
       showPicker: false,
-      columns: ["超市", "美发", "健身", "娱乐", "其他消费"],
+      columns: ["餐饮", "超市", "美发", "酒店", "健身", "娱乐", "其他"],
       minDate: new Date(),
     });
     const pattern = /\d{6}/;
