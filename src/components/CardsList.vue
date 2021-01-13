@@ -1,13 +1,27 @@
 <template>
-  <router-link to="/add"> <van-button type="primary" class="add-button" color="linear-gradient(to right, rgb(5, 100, 210), rgb(25, 137, 250))">添加新会员卡</van-button></router-link>
+  <router-link to="/add">
+    <van-button
+      type="primary"
+      class="add-button"
+      color="linear-gradient(to right, rgb(5, 100, 210), rgb(25, 137, 250))"
+      >添加新会员卡</van-button
+    ></router-link
+  >
 
   <CardSingle v-for="card in state.cards" :key="card.id" :cardData="card" />
 
   <router-link to="/add" v-if="state.cards.length > 3">
-    <van-button type="primary" class="add-button" color="linear-gradient(to right, rgb(5, 100, 210), rgb(25, 137, 250))">添加新会员卡</van-button></router-link
+    <van-button
+      type="primary"
+      class="add-button"
+      color="linear-gradient(to right, rgb(5, 100, 210), rgb(25, 137, 250))"
+      >添加新会员卡</van-button
+    ></router-link
   >
 
-  <div class="card-info" v-if="!state.cards || !state.cards.length">管理你储值过的各种会员卡，并提醒余额和有效期</div>
+  <div class="card-info" v-if="!state.cards || !state.cards.length">
+    管理你储值过的各种会员卡，并提醒余额和有效期
+  </div>
 </template>
 
 <script>
@@ -15,6 +29,7 @@ import { reactive } from "vue";
 import CardSingle from "./CardSingle.vue";
 // import axios from "axios";
 import { instance } from "../utils/axios";
+import { config } from "../utils/config";
 export default {
   name: "App",
   components: {
@@ -26,7 +41,7 @@ export default {
     });
 
     const getAllCards = () => {
-      instance.get("/cards").then((data) => {
+      instance.get(config("api/cards").URL).then((data) => {
         console.log(data);
         if (data && data.data && data.data.data && data.data.data.length) {
           console.log(data.data.data);

@@ -1,6 +1,6 @@
 module.exports = {
   // config options
-    build: {
-        base:'/card'
-    }
-}
+  build: {
+    base: "/card/",
+  },
+};

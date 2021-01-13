@@ -1,11 +1,11 @@
 import axios, { axiosInstance } from "axios";
 import { Toast } from "vant";
-import {router} from "./router"
+import { router } from "./router";
 let instance = axios.create({
   // baseURL: process.env.NODE_ENV === "production"
   //   ? "https://tools.codingyang.com/api"
   //   : "http://localhost:3006",
-  baseURL: import.meta.env.HOST,
+  // baseURL: import.meta.env.HOST,
   timeout: 50000 * 2,
 });
 
@@ -27,10 +27,10 @@ instance.interceptors.request.use(
 );
 
 instance.interceptors.response.use(
-  function(response) {
+  function (response) {
     // 用户信息是否超时，重定向到登录页面
     // debugger;
-    console.log(response)
+    console.log(response);
     if (response.status === 401) {
       localStorage.clear();
       router.replace({
@@ -50,7 +50,6 @@ instance.interceptors.response.use(
       localStorage.clear();
       router.replace({
         path: "/login",
-
       });
       Toast("用户验证失败请重新登录");
     }

@@ -1,10 +1,27 @@
 <template>
   <van-form @submit="saveCard">
     <h3>输入卡片信息</h3>
-    <van-field label="商户名" v-model="state.name" name="pattern" placeholder="店名" :rules="[{ required: true, message: '请填入商户名' }]" />
-    <van-field v-model="state.hangye" readonly clickable label="行业" placeholder="可选择行业" @click="state.showPicker = true" />
+    <van-field
+      label="商户名"
+      v-model="state.name"
+      name="pattern"
+      placeholder="店名"
+      :rules="[{ required: true, message: '请填入商户名' }]"
+    />
+    <van-field
+      v-model="state.hangye"
+      readonly
+      clickable
+      label="行业"
+      placeholder="可选择行业"
+      @click="state.showPicker = true"
+    />
     <van-popup v-model:show="state.showPicker" round position="bottom">
-      <van-picker :columns="state.columns" @cancel="state.showPicker = false" @confirm="onConfirmHangye" />
+      <van-picker
+        :columns="state.columns"
+        @cancel="state.showPicker = false"
+        @confirm="onConfirmHangye"
+      />
     </van-popup>
     <van-field name="radio" label="卡类型">
       <template #input>
@@ -15,7 +32,14 @@
         </van-radio-group>
       </template>
     </van-field>
-    <van-field label="金额" v-model="state.money" name="pattern" type="number" placeholder="储值金额" :rules="[{ required: true, message: '请输入可用余额或次数' }]" />
+    <van-field
+      label="金额"
+      v-model="state.money"
+      name="pattern"
+      type="number"
+      placeholder="储值金额"
+      :rules="[{ required: true, message: '请输入可用余额或次数' }]"
+    />
 
     <van-cell
       style="text-align: left"
@@ -26,7 +50,13 @@
     />
     <!-- <van-calendar v-model:show="state.showCalendar" :show-confirm="false" @confirm="onConfirm" /> -->
     <van-popup v-model:show="state.showCalendar" position="bottom">
-      <van-datetime-picker v-model="state.endDate" type="date" title="选择年月日" :min-date="state.minDate" @confirm="onConfirm" />
+      <van-datetime-picker
+        v-model="state.endDate"
+        type="date"
+        title="选择年月日"
+        :min-date="state.minDate"
+        @confirm="onConfirm"
+      />
     </van-popup>
     <van-button type="primary" native-type="submit">保存卡信息</van-button>
 
@@ -37,6 +67,7 @@
 <script>
 import { reactive, ref } from "vue";
 import { instance } from "../utils/axios";
+import { config } from "../utils/config";
 import { useRouter } from "vue-router";
 import { Toast } from "vant";
 export default {
@@ -76,7 +107,7 @@ export default {
       if (!state.endDate) {
         Toast("请填入截止日期");
       } else {
-        instance.post("api/cards", { card: data }).then((res) => {
+        instance.post(config("api/cards").URL, { card: data }).then((res) => {
           console.log(res);
           if (res.status === 200) {
             router.push("/");

@@ -7,30 +7,69 @@
       >
       <van-col span="12" class="card-center">
         <div class="card-center-title">余额：</div>
-        <van-circle v-model:current-rate="rate" :rate="100" :color="gradientColor" :stroke-width="60" :text="'' + currentMoney + '元'"
+        <van-circle
+          v-model:current-rate="rate"
+          :rate="100"
+          :color="gradientColor"
+          :stroke-width="60"
+          :text="'' + currentMoney + '元'"
       /></van-col>
       <van-col span="6">
-        <div class="card-right-button"><van-button size="small" type="primary" @click="state.useShow = true">消费</van-button></div>
-        <div class="card-right-button"><van-button size="small" @click="state.detailShow = true">明细</van-button></div>
-        <div class="card-right-button"><van-button size="small" type="warning" @click="deleteCard">删除</van-button></div>
+        <div class="card-right-button">
+          <van-button size="small" type="primary" @click="state.useShow = true"
+            >消费</van-button
+          >
+        </div>
+        <div class="card-right-button">
+          <van-button size="small" @click="state.detailShow = true"
+            >明细</van-button
+          >
+        </div>
+        <div class="card-right-button">
+          <van-button size="small" type="warning" @click="deleteCard"
+            >删除</van-button
+          >
+        </div>
       </van-col>
     </van-row>
     <van-divider dashed></van-divider>
-    <van-progress :percentage="state.dayRate" stroke-width="3" :pivot-text="`过期还剩` + (state.leftDay < 1 ? state.leftDay : Math.round(state.leftDay)) + `天`" />
+    <van-progress
+      :percentage="state.dayRate"
+      stroke-width="3"
+      :pivot-text="
+        `过期还剩` +
+        (state.leftDay < 1 ? state.leftDay : Math.round(state.leftDay)) +
+        `天`
+      "
+    />
   </div>
-  <van-dialog v-model:show="state.useShow" title="本次消费金额或次数（如储值请输入负数）" show-cancel-button @confirm="useCard">
-    <van-field v-model="state.number" :placeholder="currentMoney" type="number" />
+  <van-dialog
+    v-model:show="state.useShow"
+    title="本次消费金额或次数（如储值请输入负数）"
+    show-cancel-button
+    @confirm="useCard"
+  >
+    <van-field
+      v-model="state.number"
+      :placeholder="currentMoney"
+      type="number"
+    />
     <!-- <van-button>确定</van-button> -->
   </van-dialog>
   <van-dialog v-model:show="state.detailShow" title="历史明细：">
-    <div>{{ new Date(state.createdAt).toLocaleDateString() }} : {{ state.money }}</div>
-    <div v-for="log in state.log" :key="log._id">{{ new Date(log.changeDate).toLocaleDateString() }} : {{ log.detail }}</div>
+    <div>
+      {{ new Date(state.createdAt).toLocaleDateString() }} : {{ state.money }}
+    </div>
+    <div v-for="log in state.log" :key="log._id">
+      {{ new Date(log.changeDate).toLocaleDateString() }} : {{ log.detail }}
+    </div>
   </van-dialog>
 </template>
 
 <script>
 import { reactive, ref, computed } from "vue";
 import { instance } from "../utils/axios";
+import { config } from "../utils/config";
 import { Dialog } from "vant";
 export default {
   props: {
@@ -95,14 +134,18 @@ export default {
     const useCard = () => {
       console.log("使用");
       instance
-        .put("api/cards", {
+        .put(config("api/cards").URL, {
           card: { _id: state._id, changeMoney: state.number * -1 },
         })
         .then((data) => {
           console.log(data);
           if (data.data.status === 1) {
             console.log("修改成功");
-            state.log.push({ detail: state.number * -1, _id: state._id, changeDate: Date.now() });
+            state.log.push({
+              detail: state.number * -1,
+              _id: state._id,
+              changeDate: Date.now(),
+            });
             recalcCurrent();
           } else {
             console.log("修改不成功");
@@ -140,15 +183,17 @@ export default {
       })
         .then(() => {
           // on confirm
-          instance.delete("api/cards", { params: { id: state._id } }).then((data) => {
-            console.log(data);
-            if (data.data.status === 1) {
-              console.log("删除成功");
-              state.cardShowed = false;
-            } else {
-              console.log("删除不成功");
-            }
-          });
+          instance
+            .delete(config("api/cards").URL, { params: { id: state._id } })
+            .then((data) => {
+              console.log(data);
+              if (data.data.status === 1) {
+                console.log("删除成功");
+                state.cardShowed = false;
+              } else {
+                console.log("删除不成功");
+              }
+            });
         })
         .catch(() => {
           // on cancel
